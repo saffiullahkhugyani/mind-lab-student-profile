@@ -1,8 +1,9 @@
 // src/App.tsx
-import React from "react";
+
 import StudentProfile from "./components/studentPorfile/StudentProfile";
 import saffi from "./assets/saffi.jpg";
-import { Grid, GridItem } from "@chakra-ui/react";
+import { Grid, GridItem, Show } from "@chakra-ui/react";
+import NavBar from "./components/NavBar";
 // import "./App.css";
 
 const student = {
@@ -43,12 +44,25 @@ const student = {
 
 function App() {
   return (
-    <Grid templateAreas={`"nav" "main" `}>
+    <Grid
+      templateAreas={{
+        base: `"nav" "main" "footer"`,
+        lg: `"nav nav" "aside main" "footer footer"`,
+      }}
+    >
       <GridItem area={"nav"} bg="coral">
-        Nav
+        <NavBar />
       </GridItem>
+      <Show above="lg">
+        <GridItem area={"aside"} bg="gold">
+          Aside
+        </GridItem>
+      </Show>
       <GridItem area={"main"} bg="dodgerblue">
         Main
+      </GridItem>
+      <GridItem area={"footer"} bg={"gray"}>
+        footer
       </GridItem>
     </Grid>
   );
