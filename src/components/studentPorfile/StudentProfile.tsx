@@ -1,180 +1,68 @@
-// src/StudentProfile.tsx
+import noUserImage from "../../assets/no-profile-picture-icon.png";
+import { Box, Flex, Image, VStack } from "@chakra-ui/react";
+import StudentProfileText from "./StudentProfileText";
+import StudentProfileTextTitle from "./StudentProfileTextTitle";
 
-import Button from "../Button";
-import { Image } from "@chakra-ui/react";
-
-interface Certificate {
-  number: string;
-  date: string;
-  nameArabic: string;
-  nameEnglish: string;
-  pass: string;
-}
-
-interface Address {
-  neighborhood: string;
-  area: string;
-  city: string;
-  country: string;
-}
-
-interface Student {
-  photo: string;
-  number: string;
-  dob: string;
-  arabicFirstName: string;
-  arabicLastName: string;
-  arabicFullName: string;
-  englishFirstName: string;
-  englishLastName: string;
-  englishFullName: string;
+interface Profile {
+  age: string;
   email: string;
-  contact: string;
-  address: Address;
-  certificates: Certificate[];
+  id: string;
+  mobile: string;
+  name: string;
+  updated_at: Date;
 }
 
 interface StudentProfileProps {
-  student: Student;
+  student: Profile;
 }
 
 const StudentProfile = ({ student }: StudentProfileProps) => {
   return (
-    <>
-      <nav className="navbar navbar-expand-lg bg-body-tertiary">
-        <div className="container-fluid">
-          <div className="d-flex justify-content-between ">
-            <Button
-              className="btn btn-outline-primary flex-fill me-2"
-              onClick={() => console.log("button pressed")}
-            >
-              Create
-            </Button>
-            <Button
-              className="btn btn-outline-secondary  flex-fill ms-"
-              onClick={() => console.log("button pressed")}
-            >
-              Update
-            </Button>
-          </div>
+    <Box boxShadow="outline" p="6" rounded="sm" margin={2}>
+      <Flex direction="column" align="center" mt={2}>
+        <Box border="4px solid white" overflow="hidden" mb={4}>
+          <Image
+            src={noUserImage} // Replace with your image path
+            alt="Profile Picture"
+            boxSize="-moz-max-content"
+            h={"200px"}
+          />
+        </Box>
+        <VStack spacing={4} align="stretch">
+          <Box>
+            <StudentProfileTextTitle>User ID:</StudentProfileTextTitle>
 
-          <div className="d-flex">
-            <Button
-              className="btn btn-outline-danger me-1"
-              onClick={() => console.log("button pressed")}
-            >
-              Previous
-            </Button>
-            <Button
-              className="btn btn-outline-success "
-              onClick={() => console.log("button pressed")}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-      </nav>
-
-      <div className="container text-center">
-        <h1 className="text-center">Student Profile</h1>
-        <div className="row mb-3">
-          <div className="col-md-3 border">
-            <Image
-              src={student.photo}
-              alt="Student Photo"
-              className="img-thumbnail"
-            />
-          </div>
-          <div className="col-md-9">
-            <table className="table table-bordered">
-              <thead></thead>
-              <tbody>
-                <tr>
-                  <th>Member No</th>
-                  <td>{student.number}</td>
-                  <th>DoB</th>
-                  <td>{student.dob}</td>
-                </tr>
-                <tr>
-                  <th>Arabic</th>
-                  <th>First Name </th>
-                  <th>Last Name </th>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td>{student.arabicFirstName}</td>
-                  <td>{student.arabicLastName}</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <th colSpan={4}>Full Name </th>
-                </tr>
-                <tr>
-                  <td colSpan={4}>{student.arabicFullName}</td>
-                </tr>
-                <tr>
-                  <th>English</th>
-                  <td>Last Name: </td>
-                  <td>First Name: </td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td>{student.englishFirstName}</td>
-                  <td>{student.englishLastName}</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <th colSpan={4}>Full Name </th>
-                </tr>
-                <tr>
-                  <td colSpan={4}>{student.englishFullName}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className="mb-3">
-          <p>
-            <strong>Email:</strong>{" "}
-            <a href={`mailto:${student.email}`}>{student.email}</a>
-          </p>
-          <p>
-            <strong>Contact:</strong> {student.contact}
-          </p>
-          <p>
-            <strong>Address:</strong>{" "}
-            {`${student.address.neighborhood}, ${student.address.area}, ${student.address.city}, ${student.address.country}`}
-          </p>
-        </div>
-        <div>
-          <h2>Certificates</h2>
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th>Certificate No</th>
-                <th>Date</th>
-                <th>Name Arabic</th>
-                <th>Name English</th>
-                <th>Pass</th>
-              </tr>
-            </thead>
-            <tbody>
-              {student.certificates.map((cert, index) => (
-                <tr key={index}>
-                  <td>{cert.number}</td>
-                  <td>{cert.date}</td>
-                  <td>{cert.nameArabic}</td>
-                  <td>{cert.nameEnglish}</td>
-                  <td>{cert.pass}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </>
+            <StudentProfileText>{student.id}</StudentProfileText>
+          </Box>
+          <Box>
+            <StudentProfileTextTitle>Name (English):</StudentProfileTextTitle>
+            <StudentProfileText>{student.name}</StudentProfileText>
+          </Box>
+          {/* <Box>
+            <StudentProfileTextTitle>Name (Arabic):</StudentProfileTextTitle>
+            <StudentProfileText>{student.arabicFullName}</StudentProfileText>
+          </Box> */}
+          {/* <Box>
+            <StudentProfileTextTitle>Date of Birth:</StudentProfileTextTitle>
+            <StudentProfileText>{student.dob}</StudentProfileText>
+          </Box> */}
+          <Box>
+            <StudentProfileTextTitle>Email:</StudentProfileTextTitle>
+            <StudentProfileText>{student.email}</StudentProfileText>
+          </Box>
+          <Box>
+            <StudentProfileTextTitle>Contact:</StudentProfileTextTitle>
+            <StudentProfileText>{student.mobile}</StudentProfileText>
+          </Box>
+          {/* <Box>
+            <StudentProfileTextTitle>Address:</StudentProfileTextTitle>
+            <StudentProfileText>
+              {`${student.address.neighborhood}, ${student.address.area}, ${student.address.city}, ${student.address.country}`}
+            </StudentProfileText>
+          </Box> */}
+        </VStack>
+      </Flex>
+    </Box>
   );
 };
 

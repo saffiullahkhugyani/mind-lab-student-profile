@@ -1,70 +1,101 @@
-// src/App.tsx
-
-import StudentProfile from "./components/studentPorfile/StudentProfile";
 import saffi from "./assets/saffi.jpg";
-import { Grid, GridItem, Show } from "@chakra-ui/react";
-import NavBar from "./components/NavBar";
-// import "./App.css";
+import { Grid, GridItem } from "@chakra-ui/react";
+import NavBar from "./components/navBar/NavBar";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import StudentProfilePage from "./pages/StudentProfilePage";
+import CertificateCreationPage from "./pages/CertificateCreation/CertificateCreationPage";
+import { createClient } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
 
-const student = {
-  photo: saffi, // Update this to the actual path or URL of the student's photo
-  number: "42341234",
-  dob: "12-12-23",
-  arabicFirstName: "صفي",
-  arabicLastName: "الله",
-  arabicFullName: "صفي الله",
-  englishFirstName: "Saffi",
-  englishLastName: "Ullah",
-  englishFullName: "Saffi Ullah",
-  email: "saffiullah@gmail.com",
-  contact: "923365661539",
-  address: {
-    neighborhood: "Muhaisha 1",
-    area: "Muuhasiha",
-    city: "Diera",
-    country: "United Arab Emirates",
-  },
-  certificates: [
-    {
-      number: "1231412",
-      date: "12-12-23",
-      nameArabic: "طباعة ثلاثية",
-      nameEnglish: "3d printing",
-      pass: "Completed",
-    },
-    {
-      number: "44212",
-      date: "11-1-23",
-      nameArabic: "بايثون",
-      nameEnglish: "Pyahtoo",
-      pass: "In progress",
-    },
-  ],
+const supabase = createClient(
+  "https://hqxhavqdfifdsorruiqp.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxeGhhdnFkZmlmZHNvcnJ1aXFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTE1Mjk5MDQsImV4cCI6MjAyNzEwNTkwNH0.yv1Kgjuufvm4_AHi5vdrqE6Ssh5FPh1Yr_xIHlcsAfA"
+);
+
+interface UserProfile {
+  age: string;
+  email: string;
+  id: string;
+  mobile: string;
+  name: string;
+  updated_at: Date;
+  photo: string;
+}
+
+const profileTemplate: UserProfile = {
+  age: "",
+  email: "",
+  id: "",
+  mobile: "",
+  name: "",
+  updated_at: new Date(),
+  photo: saffi,
 };
 
 function App() {
+  const [users, setUsers] = useState<UserProfile[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const { data, error } = await supabase.from("profiles").select();
+
+        if (error) {
+          throw error;
+        }
+
+        setUsers(data.map((user) => ({ ...profileTemplate, ...user })));
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError(String(err));
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getUsers();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) return <div>Error: {error}</div>;
+
   return (
-    <Grid
-      templateAreas={{
-        base: `"nav" "main" "footer"`,
-        lg: `"nav nav" "aside main" "footer footer"`,
-      }}
-    >
-      <GridItem area={"nav"} bg="coral">
-        <NavBar />
-      </GridItem>
-      <Show above="lg">
-        <GridItem area={"aside"} bg="gold">
-          Aside
+    <Router>
+      <Grid
+        templateAreas={{
+          base: `"nav" "main" `,
+          lg: `"nav" "main" `,
+        }}
+        templateColumns={{
+          base: "1fr",
+          lg: "1fr",
+        }}
+      >
+        <GridItem area={"nav"} w={"100%"}>
+          <NavBar />
         </GridItem>
-      </Show>
-      <GridItem area={"main"} bg="dodgerblue">
-        Main
-      </GridItem>
-      <GridItem area={"footer"} bg={"gray"}>
-        footer
-      </GridItem>
-    </Grid>
+        <GridItem area={"main"}>
+          <Routes>
+            <Route
+              path="/"
+              element={<StudentProfilePage student={users[0]} />}
+            />
+            <Route
+              path="/create-certificate"
+              element={<CertificateCreationPage student={users} />}
+            />
+          </Routes>
+        </GridItem>
+      </Grid>
+    </Router>
   );
 }
 
