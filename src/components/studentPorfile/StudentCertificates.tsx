@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Box } from "@chakra-ui/react";
 
 interface Profile {
   age: string;
@@ -41,11 +42,14 @@ interface CertificateModel {
 }
 
 const StudentCertificates = ({ student }: StudentProfileProps) => {
-  const [loadUserCertificates, setUserCertificates] =
-    useState<CertificateModel[]>();
+  const [loadUserCertificates, setUserCertificates] = useState<
+    CertificateModel[]
+  >([]);
+  const [loading, isLoading] = useState(false);
 
   useEffect(() => {
     const loadUserCertificates = async () => {
+      isLoading(true);
       try {
         const { data, error } = await supabase
           .from("certificate_master ")
@@ -75,43 +79,61 @@ const StudentCertificates = ({ student }: StudentProfileProps) => {
           ...certificate,
           skill_name: certificate.skill_name,
         }));
-        if (data.length !== 0) setUserCertificates(formattedData);
+        if (data.length !== 0) {
+          isLoading(false);
+          setUserCertificates(formattedData);
+        } else {
+          isLoading(false);
+          setUserCertificates([]);
+        }
       } catch (err) {
         if (err instanceof Error) console.log(err.message);
       }
     };
     loadUserCertificates();
-  }, []);
+  }, [student]);
+
+  if (loading) {
+    return (
+      <Box className="flex dataCard m-2" justifyContent={"center"}>
+        <h1 className="font-bold">Loading Certificates</h1>
+      </Box>
+    );
+  }
+
+  if (loadUserCertificates.length === 0) {
+    return (
+      <Box className="flex dataCard m-2" justifyContent={"center"}>
+        <h1 className="font-bold">No certificate found</h1>
+      </Box>
+    );
+  }
 
   return (
     <div className="dataCard  m-2">
-      {loadUserCertificates ? (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">No.</TableHead>
-              <TableHead>Certificate No.</TableHead>
-              <TableHead>Date Added</TableHead>
-              <TableHead>Skill Name</TableHead>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">No.</TableHead>
+            <TableHead>Certificate No.</TableHead>
+            <TableHead>Date Added</TableHead>
+            <TableHead>Skill Name</TableHead>
 
-              <TableHead>Status</TableHead>
+            <TableHead>Status</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {loadUserCertificates.map((certificate, index) => (
+            <TableRow key={certificate.id}>
+              <TableCell>{index + 1}</TableCell>{" "}
+              <TableCell>{certificate.certificate_number}</TableCell>
+              <TableCell>{certificate.date_added}</TableCell>
+              <TableCell>{certificate.skill_name.skill_name}</TableCell>
+              <TableCell>Complete</TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {loadUserCertificates.map((certificate, index) => (
-              <TableRow key={certificate.id}>
-                <TableCell>{index + 1}</TableCell>{" "}
-                <TableCell>{certificate.certificate_number}</TableCell>
-                <TableCell>{certificate.date_added}</TableCell>
-                <TableCell>{certificate.skill_name.skill_name}</TableCell>
-                <TableCell>Complete</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      ) : (
-        <h1 className="font-bold">No certificate found</h1>
-      )}
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 };

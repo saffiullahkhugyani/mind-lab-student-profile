@@ -1,11 +1,11 @@
-import saffi from "./assets/saffi.jpg";
-import { Grid, GridItem } from "@chakra-ui/react";
-import NavBar from "./components/navBar/NavBar";
+import { useEffect, useState } from "react";
+import { Box, Grid, GridItem } from "@chakra-ui/react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import NavBar from "./components/navBar/NavBar";
 import StudentProfilePage from "./pages/StudentProfilePage";
 import CertificateCreationPage from "./pages/CertificateCreation/CertificateCreationPage";
 import { createClient } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
+import saffi from "./assets/saffi.jpg";
 
 const supabase = createClient(
   "https://hqxhavqdfifdsorruiqp.supabase.co",
@@ -36,6 +36,7 @@ function App() {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<string>("");
 
   useEffect(() => {
     const getUsers = async () => {
@@ -61,11 +62,22 @@ function App() {
     getUsers();
   }, []);
 
+  const handleSelectUser = (userId: string) => {
+    setSelectedUser(userId);
+  };
+
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <Box className="flex m-5 dataCard" justifyContent={"center"}>
+        <h1 className="font-bold">Loading...</h1>
+      </Box>
+    );
   }
 
   if (error) return <div>Error: {error}</div>;
+
+  const selectedUserProfile =
+    users.find((user) => user.id === selectedUser) || users[0];
 
   return (
     <Router>
@@ -80,13 +92,17 @@ function App() {
         }}
       >
         <GridItem area={"nav"} w={"100%"}>
-          <NavBar />
+          <NavBar
+            users={users}
+            selectedUser={selectedUser}
+            onSelectUser={handleSelectUser}
+          />
         </GridItem>
         <GridItem area={"main"}>
           <Routes>
             <Route
               path="/"
-              element={<StudentProfilePage student={users[0]} />}
+              element={<StudentProfilePage student={selectedUserProfile} />}
             />
             <Route
               path="/create-certificate"

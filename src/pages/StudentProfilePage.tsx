@@ -1,4 +1,4 @@
-import { Grid, GridItem, Show } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Show } from "@chakra-ui/react";
 import StudentProfile from "../components/studentPorfile/StudentProfile";
 import StudentPieChart from "../components/studentPorfile/StudentPieChart";
 import StudentCertificates from "../components/studentPorfile/StudentCertificates";
@@ -18,7 +18,11 @@ interface StudentProfileProps {
 
 const StudentProfilePage = ({ student }: StudentProfileProps) => {
   if (!student) {
-    return <div>loading data...</div>;
+    return (
+      <Box className="text-bold" justifyContent={"center"}>
+        loading data...
+      </Box>
+    );
   }
   return (
     <Grid

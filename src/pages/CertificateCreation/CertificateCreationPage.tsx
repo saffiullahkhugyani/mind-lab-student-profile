@@ -258,7 +258,7 @@ const CertificateCreationPage: React.FC<StudentProfileProps> = ({
     <div className="mx-20 my-5">
       <h1 className="text-4xl font-bold text-center">Certificate Form</h1>
 
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+      <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
         <div className="mt-5 flex gap-2">
           <p className="text-xl font-bold">Certificate no.</p>
           <p className="text-xl font-bold">{certificateNumber}</p>
@@ -370,20 +370,19 @@ const CertificateCreationPage: React.FC<StudentProfileProps> = ({
                 <p className="text-red-500">{errors.city.message}</p>
               )}
             </div>
-
-            <div>
-              <Input
-                placeholder="Street Address"
-                {...register("streetAddress")}
-              />
-              {errors.streetAddress && (
-                <p className="text-red-500">{errors.streetAddress.message}</p>
-              )}
-            </div>
+          </div>
+          <div className="mt-5">
+            <Input
+              placeholder="Street Address"
+              {...register("streetAddress")}
+            />
+            {errors.streetAddress && (
+              <p className="text-red-500">{errors.streetAddress.message}</p>
+            )}
           </div>
         </div>
 
-        <div className="mt-5">
+        <div>
           <FormLabel>Issue Authority</FormLabel>
           <Input
             {...register("issueAuthority")}

@@ -13,11 +13,11 @@ ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
 const StudentPieChart = () => {
   const data = {
-    labels: ["Green", "Purple", "Orange"],
+    labels: ["Blue", "Green", "Gray"],
     datasets: [
       {
         label: "# of Votes",
-        data: [46, 38, 15],
+        data: [2, 1, 30],
         backgroundColor: ["blue", "green", "gray"],
         borderWidth: 0,
         hoverOffset: 20,
